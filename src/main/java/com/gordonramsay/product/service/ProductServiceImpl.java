@@ -19,6 +19,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
     private static final String UPDATE_TOPIC = "product.update";
+    private static final String CREATE_TOPIC = "product.create";
 
     private final ProductRepository productRepository;
     private final KafkaTemplate<String, String> kafkaTemplate;
@@ -26,7 +27,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product addProduct(AddProductRequest request) {
         Product product = new Product(request.getName(), request.getSalesPrice(), request.getMobileSalesPrice());
-        return productRepository.save(product);
+        product = productRepository.save(product);
+        kafkaTemplate.send(CREATE_TOPIC, product.toString());
+        return product;
     }
 
     @Override
