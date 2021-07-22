@@ -1,6 +1,5 @@
 package com.gordonramsay.product.service;
 
-import com.gordonramsay.product.messaging.Publisher;
 import com.gordonramsay.product.dto.AddProductRequest;
 import com.gordonramsay.product.dto.UpdateProductRequest;
 import com.gordonramsay.product.exception.ProductNotFound;
