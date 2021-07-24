@@ -1,5 +1,6 @@
 package com.gordonramsay.product.service;
 
+import com.alibaba.fastjson.JSON;
 import com.gordonramsay.product.dto.AddProductRequest;
 import com.gordonramsay.product.dto.UpdateProductRequest;
 import com.gordonramsay.product.exception.ProductNotFound;
@@ -27,7 +28,7 @@ public class ProductServiceImpl implements ProductService {
     public Product addProduct(AddProductRequest request) {
         Product product = new Product(request.getName(), request.getSalesPrice(), request.getMobileSalesPrice());
         product = productRepository.save(product);
-        kafkaTemplate.send(CREATE_TOPIC, product.toString());
+        kafkaTemplate.send(CREATE_TOPIC, JSON.toJSONString(product, false));
         return product;
     }
 
@@ -51,6 +52,6 @@ public class ProductServiceImpl implements ProductService {
         // TODO: Should we check null parameters, do we want to update fields as null
         BeanUtils.copyProperties(request, product);
         Product updatedProduct = productRepository.save(product);
-        kafkaTemplate.send(UPDATE_TOPIC, updatedProduct.toString());
+        kafkaTemplate.send(UPDATE_TOPIC, JSON.toJSONString(updatedProduct, false));
     }
 }
